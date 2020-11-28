@@ -22,19 +22,18 @@ while(1) {
                 $count = 0;
                 foreach ($json_doc as $doc) {
                     if (strpos($doc['doc'], $query) !== false) {
-                        $message_text = str_replace(".", "\\.", "[{$doc['name']}]($base_url{$doc['link']})\n{$doc['doc']}");
                         $result_doc[] =     [
                             "type" => "article",
                             "id" => ++$count,
-                            "title" => $doc['name'],
+                                "title" => "{$doc['type']}: {$doc['name']}",
                             "url" => $base_url.$doc['link'],
                             "hide_url" => true,
                             "description" => $doc['doc'],
                             "input_message_content" => [
-                                "parse_mode" => "MarkdownV2",
-                                "message_text" => $message_text
+                                "parse_mode" => "HTML",
+                                "message_text" => "Type: {$doc['type']}\n<strong>{$doc['name']}</strong>\n{$doc['doc']}\n<a href=\"$base_url{$doc['link']}\">Go to web</a>"
                             ],
-                            "thumb_url" => "https://www.yoelprogramador.com/wp-content/uploads/2018/11/proxy.duckduckgo.com_.jpg"
+                            "thumb_url" => "https://avatars1.githubusercontent.com/u/22078968?s=200&v=4"
                         ];
                         # 50 es el límite de resultados de la API
                         if (count($result_doc) >= 50) {
@@ -54,7 +53,7 @@ while(1) {
 
 # Función para enviar los métodos a la API
 function sendMethod($method, $params = array()){
-    $url   = "https://api.telegram.org/bot".TOKEN."/$method";
+    $url = "https://api.telegram.org/bot".TOKEN."/$method";
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type:multipart/form-data"));
     curl_setopt($ch, CURLOPT_URL, $url);
